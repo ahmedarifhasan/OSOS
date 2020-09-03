@@ -30,6 +30,9 @@ const userdb = require('./models/user')
 const bodyParser = require('body-parser')
 
 
+
+
+
 // Files Downlaoded on the client side , ie acts local to them
 app.use(express.static(path.join(__dirname,'public')))
 
@@ -55,5 +58,5 @@ app.use('/',require('./routes/indexrouter.js'))
 const port = process.env.PORT || 5000
 
 app.listen(port ,()=>{
-    console.log("Listening on port " + port);
+  console.log("Listening on port " + port);
 });

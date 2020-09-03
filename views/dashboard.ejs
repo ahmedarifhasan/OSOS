@@ -1,11 +1,12 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
     <!-- There's a reason why I didn't use 'express-ejs-layouts' -->
-    
+
     <script src="/js/jquery.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-reset.css">
@@ -38,19 +39,34 @@
     <link href="/css/style.css" rel="stylesheet">
     <link href="/css/helper.css" rel="stylesheet">
 </head>
+
 <body>
+
+
+    <div class="container">
+        <% data.forEach( (row) => { %>
+        <div class="row">
+            <div class="col-sm-8">
+                <h2>
+                  <button class="btn btn-block btn-info">
+                      <%= row %>
+                  </button>  
+                </h2>
+            </div>
+        </div>
+        <%}) %>
+    </div>
 
     <div class="container">
 
         <div style="align-content: center;" class="row">
-            <div style="text-align: center;"> 
-                    <h1>Click the Button</h1>
+            <div style="text-align: center;">
+                <h1>Click the Button</h1>
             </div>
         </div>
 
         <div class="row ">
             <div class="col-6">
-
                 <form action="/dashboard" method="post">
                     <button class="btn btn-lg btn-block btn-purple" type="submit">SUBMIT</button>
                 </form>
@@ -58,7 +74,8 @@
         </div>
 
     </div>
-        
+
 
 </body>
+
 </html>

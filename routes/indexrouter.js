@@ -66,33 +66,71 @@ router.get('/login', (req, res) => {
 // API key : 2e36871d5b43683e7a31edf11112dd02
 
 router.get('/dashboard', (req, res) => {
-    res.render('dashboard')
+
+    // user.createIndexes({ location : "2dsphere" })
+    user.find({
+        'location': {
+            '$geoWithin': {
+                '$centerSphere': [
+                    [73.93414657, 4.82302903], 1000000/3963.2
+                ]
+            }
+        }
+    } , (err,data)=>{
+        if(err) {console.log("ERROR IN GIOWITHIN ->>" + err);}
+        else{
+            console.log( data, "In giowithin");
+            res.render('dashboard', {
+                data : data
+            })
+        }
+    })
 })
 
 router.post('/dashboard', (req, res) => {
-    user.aggregate(
-        [{
-            "$geonear": {
-                "near": {
-                    "type": "Point",
-                    "coordinates": [-73.99279, 40.719296]
-                },
-                "distaceField": "dis",
-                "spherical": true,
+    res.redirect('/dashboard')
+    const filter = {
+        'location': {
+          '$near': {
+            '$maxDistance': 1000000, 
+            '$geometry': {
+              'type': 'Point', 
+              'coordinates': [
+                70.3, 3.5
+              ]
             }
-        }],
-        (error, result) => {
-            if (error) {res.status(401).send(); console.log(error) }
-
-            else {
-                console.log(result);
-                res.render('dashboard', {
-                    result: result
-                })
-            }
-
+          }
         }
-    )
+      };
+      
+
+  
+
+    // user.aggregate(
+    //     [{
+    //         "$geonear": {
+    //             "near": {
+    //                 "type": "Point",
+    //                 // Find the closest point to this coordinates below
+    //                 "coordinates": [-73.99279, 40.719296]
+    //             },
+    //             "distaceField": "dis",
+    //             "spherical": true,
+    //         }
+    //     }],
+    //     (error, result) => {
+    //         if (error) {
+    //             res.status(401).send();
+    //             console.log(error)
+    //         } else {
+    //             console.log(result);
+    //             res.render('dashboard', {
+    //                 result: result
+    //             })
+    //         }
+
+    //     }
+    // )
 
 })
 
@@ -121,6 +159,9 @@ router.post('/login', (req, res) => {
         }
     })
 })
+
+// <-- Image Uploading -->
+
 
 
 
