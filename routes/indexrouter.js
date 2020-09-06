@@ -2,8 +2,19 @@ const express = require('express')
 const router = express.Router()
 const bodyParser = require('body-parser')
 
-var jsAlert = require('js-alert')
 
+const tt = require('@tomtom-international/web-sdk-services/dist/services-node.min.js');
+
+tt.services.copyrights({
+        key: 'h7Zirz3PBI0aDIrfq0UQlnOXm7HiB5kj'
+    })
+    .go()
+    .then(function (results) {
+        console.log('Copyrights', results);
+    })
+    .catch(function (reason) {
+        console.log('Copyrights', reason);
+    });
 
 const user = require('../models/user')
 
@@ -27,8 +38,10 @@ router.post('/register', (req, res) => {
     var long = req.body.longitude
     console.log(lat, long);
     var coords = []
-    coords.push(lat, long)
-
+    coords.push(lat)
+    coords.push(long)
+    console.log(lat, long, "<<<Lat,Long In register post>>>");
+    console.log(coords, "<<<Coords In register post>>>");
     var new_user = new user({
         username: username,
         email: email,
@@ -67,44 +80,54 @@ router.get('/login', (req, res) => {
 
 router.get('/dashboard', (req, res) => {
 
-    // user.createIndexes({ location : "2dsphere" })
-    user.find({
-        'location': {
-            '$geoWithin': {
-                '$centerSphere': [
-                    [73.93414657, 4.82302903], 1000000/3963.2
-                ]
+    user.createIndexes({
+        geojson: "2dsphere"
+    })
+    const filter = {
+        'geojson': {
+            '$near': {
+                '$maxDistance': 10000000000,
+                '$geometry': {
+                    'type': 'Point',
+                    'coordinates': [
+                        18,
+                        79
+                    ]
+                }
             }
         }
-    } , (err,data)=>{
-        if(err) {console.log("ERROR IN GIOWITHIN ->>" + err);}
-        else{
-            console.log( data, "In giowithin");
-            res.render('dashboard', {
-                data : data
-            })
+    };
+    user.find(
+
+        // filter
+        {
+            'geojson': {
+                '$geoWithin': {
+                    '$centerSphere': [
+                        [18, 79.82302903], 100000000000000 / 3963.2
+                    ]
+                }
+            }
         }
-    })
+
+        , (err, data) => {
+            if (err) {
+                console.log("ERROR IN GIOWITHIN ->>" + err);
+            } else {
+                console.log(data, "<<<In giowithin>>>");
+                res.render('dashboard', {
+                    data: data
+                })
+            }
+        })
 })
 
 router.post('/dashboard', (req, res) => {
     res.redirect('/dashboard')
-    const filter = {
-        'location': {
-          '$near': {
-            '$maxDistance': 1000000, 
-            '$geometry': {
-              'type': 'Point', 
-              'coordinates': [
-                70.3, 3.5
-              ]
-            }
-          }
-        }
-      };
-      
 
-  
+
+
+
 
     // user.aggregate(
     //     [{
@@ -148,11 +171,8 @@ router.post('/login', (req, res) => {
         if (error) {
             console.error("User Not registered")
             res.redirect('/register')
-        } else if (result.password == password) {
-            res.render('dashboard', {
-                name: result.name,
-                email: result.email
-            })
+        } else if (result.password === password) {
+            res.redirect('/dashboard')
         } else {
             console.error("Wrong Password")
             res.redirect('/login')
