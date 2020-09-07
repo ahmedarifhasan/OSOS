@@ -1,9 +1,13 @@
 const mongoose = require('mongoose')
 
 const deliveryguySchema = new mongoose.Schema({
-    name : {
+    username : {
         type : String,
         required :true
+    },
+    password : {
+        type : String,
+        required : true
     },
     currentLocation :{
         type : []
@@ -15,9 +19,7 @@ const deliveryguySchema = new mongoose.Schema({
         type : Number
     },
     orderID : {
-        type : {
-            
-        }
+        type : Number
     }
 })
 

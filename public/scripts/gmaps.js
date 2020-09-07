@@ -84,15 +84,7 @@ function initMap() {
 
 
 
-
-    let button = document.getElementById("button")
-    button.addEventListener("click", () => {
-        if (map1.style.display == "none") {
-            map1.style.display = "block"
-        } else {
-            map1.style.display = "none"
-        }
-    })
+    
 }
 
   // function initMap() {

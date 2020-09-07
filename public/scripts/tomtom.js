@@ -12,7 +12,7 @@ function createMarker(icon, position, color, popupText) {
     var iconElement = document.createElement('div');
     iconElement.className = 'marker-icon';
     iconElement.style.backgroundImage =
-        'url(https://api.tomtom.com/maps-sdk-for-web/5.x/assets/images/' + icon + ')';
+        '/assets/' + icon ;
     markerContentElement.appendChild(iconElement);
     var popup = new tt.Popup({
         offset: 30
