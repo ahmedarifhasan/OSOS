@@ -46,8 +46,8 @@ app.set('view engine','ejs')
 
 
 // <-- Routers -->
-app.use('/',require('./routes/indexrouter.js'))
-app.use('/delivery',require('./routes/deliverGuy.js'))
+app.use('/user',require('./routes/indexRouter.js'))
+app.use('/delivery',require('./routes/deliveryGuyRouter.js'))
 
 
 

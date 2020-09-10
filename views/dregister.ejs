@@ -19,7 +19,6 @@
     <script src="/js/wow.min.js"></script>
     <script src="/js/jquery.scrollTo.min.js"></script>
     <script src="/js/jquery.nicescroll.js" type="text/javascript"></script>
-    <script src="/assets/chat/moment-2.2.1.js"></script>
 
     <!-- Counter-up -->
     <script src="/js/waypoints.min.js" type="text/javascript"></script>
@@ -34,8 +33,6 @@
     </script>
 
     <!--Icon-fonts css-->
-    <link href="/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-    <!-- <link href="/assets/ionicon/css/ionicons.min.css" rel="stylesheet" /> -->
     <link href="/css/style.css" rel="stylesheet">
     <link href="/css/helper.css" rel="stylesheet">
 
@@ -51,59 +48,73 @@
                 <h3 class="text-center m-t-10"> <strong>GeoChat</strong> </h3>
             </div>
 
-            <form class="form-horizontal m-t-40" action="/delivery/register" method="POST">
+            <form class="form-horizontal m-t-40" action="register" method="POST">
 
                 <div class="form-group ">
                     <div class="col-xs-12">
-                        <input class="form-control" name="username" type="text" placeholder="Username">
+                        <input class="form-control" name="username" id="username" type="text" placeholder="Username">
                     </div>
                 </div>
 
                 <div class="form-group ">
                     <div class="col-xs-12">
-                        <input class="form-control" name="email" type="text" placeholder="E-mail">
+                        <input class="form-control" name="email" type="text" id="email" placeholder="E-mail">
                     </div>
                 </div>
 
                 <div class="form-group ">
 
                     <div class="col-xs-12">
-                        <input class="form-control" name="password" type="password" placeholder="Password">
+                        <input class="form-control" name="password" type="password" id="password"
+                            placeholder="Password">
                     </div>
                 </div>
 
-                <div class="form-group text-right">
+                <div class="form-group">
                     <div class="col-xs-12">
-                        <button class="btn btn-success btn-block btn-lg" type="button" onclick="getLocation()">
-                            <strong>Get
-                                Location</strong></button>
+                        <button class="btn btn-info btn-block" type="button" onclick='getDeliveryID(this)'>
+                            <strong>Click to get your Delivery ID</strong></button>
+                    </div>
+                    <div class="col-xs-12">
+                        <b>
+                            <input class="form-control" id="deliveryID" name="deliveryID" type="text"
+                                placeholder="Delivery ID" onclick="myFunction()" readonly>
+                        </b>
                     </div>
                 </div>
 
-                <div class="form-group ">
-                    <b>
-
-                        <div class="col-xs-12">
-                            <input class="form-control" id="lat" name="latitude" type="text" placeholder="Latitude">
-                    </b>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <button class="btn btn-success btn-block" type="button" onclick="getLocation()">
+                            <strong>Get Location</strong></button>
+                    </div>
+                    <div class="col-xs-12">
+                        <b>
+                            <input class="form-control" id="lat" name="latitude" type="text" placeholder="Latitude" readonly>
+                        </b> 
+                    </div>
+                    <div class="col-xs-12">
+                        <b>
+                            <input class="form-control" id="lon" name="longitude" type="text" placeholder="Longitude" readonly>
+                        </b>
+                    </div>
                 </div>
-                <br><br>
-                <div class="col-xs-12">
-                    <b>
-                        <input class="form-control" id="lon" name="longitude" type="text" placeholder="Longitude">
-                    </b>
+
+
+                <div id="message" class="alert alert-danger" style="text-align: center;" role="alert">
+                    Fill all the details to Register
                 </div>
-        </div>
+
+                <div class="form-group text-center">
+                    <div class="col-xs-12">
+                        <button class="btn btn-purple btn-lg" id="submit" type="submit">Register</button>
+                    </div>
+                </div>
 
 
-        <div class="form-group text-right">
-            <div class="col-xs-12">
-                <button class="btn btn-purple btn-lg" type="submit">Register</button>
-            </div>
         </div>
         </form>
 
-    </div>
     </div>
 
 
@@ -111,7 +122,8 @@
 
 
 <script>
-    // var x = document.getElementById("demo");
+    let loc = false,
+        deli = false
 
     function getLocation() {
         alert("Allow Location. If that does not work, Kindly Check your browser Settings and Try Again.")
@@ -122,16 +134,78 @@
         }
     }
 
+
+
     function showPosition(position) {
         console.log(position);
         var lat = position.coords.latitude;
         var lon = position.coords.longitude;
         if (lat === lon) {
-            console.log("FAODLELD");
+            console.log("LAT == LON");
             console.log(lat, lon, "<<<");
         }
         document.getElementById('lat').value = lat
         document.getElementById('lon').value = lon
+        loc = true
+    }
+</script>
+
+
+<script>
+    function getDeliveryID(element) {
+        document.getElementById("deliveryID").value = makeid(5).toString()
+        // document.getElementById("deliveryID").value = makeid(5).toString()
+        element.style.display = "none"
+        deli = true
+    }
+
+    function makeid(length) {
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+</script>
+
+
+
+<!-- Form validation -->
+<script>
+    function myFunction() {
+        var copyText = document.getElementById("deliveryID");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+        document.execCommand("copy");
+        alert("Copied the text: " + copyText.value);
+    }
+    setInterval(formCheck, 3000);
+
+    function formCheck() {
+        console.log("In form Check");
+        let submitButton = document.getElementById('submit')
+        submitButton.setAttribute("disabled", "true")
+        let un = document.getElementById("username")
+        let email = document.getElementById("email")
+        let pwd = document.getElementById("password")
+
+        if (un.value != "" && pwd.value != "" && email.value != "") {
+            if (deli && loc) {
+                document.getElementById("message").innerHTML = ""
+                submitButton.removeAttribute("disabled")
+                document.getElementById("message").innerText = "Copy Your Delivery ID and Register"
+
+                document.getElementById("message").classList.remove('alert-danger')
+                document.getElementById("message").classList.add('alert-success')
+            } else {
+                document.getElementById("message").innerHTML = "Get Your Location and Delivery ID to Register"
+
+
+            }
+        }
     }
 </script>
 

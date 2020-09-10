@@ -1,5 +1,4 @@
-dbLink = 'mongodb+srv://test1:test@pariksha.tro66.gcp.mongodb.net/testdb?retryWrites=true&w=majority';
-
+dbLink = `mongodb+srv://arif:arif@cluster0.7cgsl.gcp.mongodb.net/geonear`
 module.exports = {
     mongoURI :  dbLink
 }
