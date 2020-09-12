@@ -180,11 +180,6 @@
 // // <-- Image Uploading -->
 
 
-
-
-
-
-
 // module.exports = router
 
 
@@ -196,20 +191,15 @@ const bodyParser = require('body-parser')
 const tt = require('@tomtom-international/web-sdk-services/dist/services-node.min.js');
 
 tt.services.copyrights({
-        key: 'h7Zirz3PBI0aDIrfq0UQlnOXm7HiB5kj'
-    })
-    .go()
-    .then(function (results) {
-        console.log('Copyrights', results);
-    })
-    .catch(function (reason) {
-        console.log('Copyrights', reason);
-    });
+    // TomTom API key
+    key: 'h7Zirz3PBI0aDIrfq0UQlnOXm7HiB5kj'
+});
 
 const user = require('../models/user');
-const { route } = require('./deliveryGuyRouter');
-
-
+const {
+    route
+} = require('./deliveryGuyRouter');
+const deliveryguy = require('../models/deliveryguy');
 
 
 router.get('/register', (req, res) => {
@@ -251,12 +241,6 @@ router.post('/register', (req, res) => {
             res.redirect('/login')
         }
     })
-    // user.findOne({
-    //     username: username
-    // }, (error, result) => {
-
-    // })
-
 
 })
 
@@ -269,28 +253,42 @@ router.get('/login', (req, res) => {
 
 // API key : 2e36871d5b43683e7a31edf11112dd02
 
-router.get('/dashboard', (req, res) => {
+router.get('/dashboard/:id', (req, res) => {
 
+    console.log(req.session.userid, req.params.id);
+    if (!req.session.userid) {
+        console.log("Login Failed");
+        res.redirect('/user/login')
+    }
+
+
+    deliveryguy.createIndexes({
+        geojson: "2dsphere"
+    })
     user.createIndexes({
         geojson: "2dsphere"
     })
-    const filter = {
-        'geojson': {
-            '$near': {
-                '$maxDistance': 10000000000,
-                '$geometry': {
-                    'type': 'Point',
-                    'coordinates': [
-                        18,
-                        79
-                    ]
+
+    let userid = req.params.id
+
+    user.findById(userid, (err, userdata) => {
+
+        let coords = userdata.coordinates
+
+        // Getting User Location, Passing User Co-ordinates to get nearest location , using 'Point' type
+
+        const filter = {
+            'geojson': {
+                '$near': {
+                    '$maxDistance': 10000000000,
+                    '$geometry': {
+                        'type': 'Point',
+                        'coordinates': coords
+                    }
                 }
             }
         }
-    };
-    user.find(
 
-        filter
         // {
         //     'geojson': {
         //         '$geoWithin': {
@@ -301,24 +299,45 @@ router.get('/dashboard', (req, res) => {
         //     }
         // }
 
-        , (err, data) => {
-            if (err) {
-                console.log("ERROR IN GIOWITHIN ->>" + err);
-            } else {
-                console.log(data, "<<<In giowithin>>>");
-                res.render('dashboard', {
-                    data: data
+        if (err) {
+            console.log("<< " + err + " >>");
+            res.status(401).send();
+        } else {
+
+            deliveryguy.find(
+                filter, (error, deliveryGuyData) => {
+                    if (error) {
+                        console.log("ERROR IN GIOWITHIN ->>" + error);
+                        res.status(401).send()
+                    } else {
+                        console.log(deliveryGuyData, "\n<<<Data in giowithin>>>");
+                        res.render('dashboard', {
+                            data: deliveryGuyData,
+                            userdata: userdata
+                        })
+                    }
                 })
-            }
-        })
+        }
+    })
+
 })
 
-router.post('/dashboard', (req, res) => {
-    res.redirect('/dashboard')
+router.post('/dashboard/:id', (req, res) => {
+    console.log(req.body, "Dashboard on the Server");
+    var lat = req.body.lat
+    var lon = req.body.long
+    lat = parseFloat(lat)
+    lon = parseFloat(lon)
 
+    console.log(lat,lon);
 
+    // Update User Location in Database    
 
-
+    if (!req.session.userid) {
+        res.redirect('/user/login')
+    }
+    else
+    res.redirect('/user/dashboard/'+req.params)
 
     // user.aggregate(
     //     [{
@@ -361,9 +380,11 @@ router.post('/login', (req, res) => {
     }, (error, result) => {
         if (error) {
             console.error("User Not registered")
-            res.redirect('/register')
+            res.redirect('/user/register')
         } else if (result.password === password) {
-            res.redirect('/dashboard')
+            req.session.userid = result._id
+            console.log(req.session.userid);
+            res.redirect('/user/dashboard/' + req.session.userid)
         } else {
             console.error("Wrong Password")
             res.redirect('/login')

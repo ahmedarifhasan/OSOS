@@ -49,11 +49,11 @@
                 <h3 class="text-center m-t-10"> Sign In to <strong>GeoChat</strong> </h3>
             </div>
 
-            <form class="form-horizontal m-t-40" action="login" method="POST">
+            <form class="form-horizontal m-t-40" action="/user/login" method="POST">
 
                 <div class="form-group ">
                     <div class="col-xs-12">
-                        <input class="form-control" name="username" type="text" placeholder="Username">
+                        <input class="form-control" name="username" type="text" id="username" placeholder="Username">
                     </div>
                 </div>
                 <div class="form-group ">
@@ -65,27 +65,25 @@
 
                 <div class="form-group ">
                     <div class="col-xs-12">
-                        <label class="cr-styled">
-                            <input type="checkbox" checked>
-                            <i class="fa"></i>
-                            Remember me
-                        </label>
+                        <div class="alert alert-danger" id="createAccountMessage"> 
+                            <b>
+                                Don't Have an Account? 
+                            </b>
+                        </div>
+                        <button class="btn btn-warning text-left"> <a href="/user/register">
+                                <b>
+                                    Create an account
+                                </b>
+                            </a>
+                        </button>
                     </div>
                 </div>
 
                 <div class="form-group text-right">
                     <div class="col-xs-12">
-                        <button class="btn btn-purple w-md" type="submit">Log In</button>
+                        <button class="btn btn-purple w-md btn-lg" type="submit">Log In</button>
                     </div>
                 </div>
-                <!-- <div class="form-group m-t-30">
-                    <div class="col-sm-7">
-                        <a href="recoverpw.html"><i class="fa fa-lock m-r-5"></i> Forgot your password?</a>
-                    </div>
-                    <div class="col-sm-5 text-right">
-                        <a href="register.html">Create an account</a>
-                    </div>
-                </div> -->
             </form>
 
         </div>
@@ -94,4 +92,21 @@
 
 </body>
 
+<style>
+    .btn{
+        border-radius: 13px;
+    }
+</style>
+
+<script>
+    let un = document.getElementById('username')
+    un.addEventListener('click',()=>{
+        document.getElementById('createAccountMessage').style.display = "none"
+    })
+    un.addEventListener('focusout',()=>{
+        document.getElementById('createAccountMessage').style.display = "block"
+    })
+</script>
+
 </html>
+
