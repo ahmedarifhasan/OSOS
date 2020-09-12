@@ -5,8 +5,6 @@ const app = express()
 // <-- Database -->
 const mongoose = require('mongoose')
 
-
-
 const dbLink = require('./auth/dbconfig').mongoURI
 
 mongoose.connect(dbLink, {

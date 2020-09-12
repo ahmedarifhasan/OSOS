@@ -326,18 +326,38 @@ router.post('/dashboard/:id', (req, res) => {
     console.log(req.body, "Dashboard on the Server");
     var lat = req.body.lat
     var lon = req.body.long
-    lat = parseFloat(lat)
-    lon = parseFloat(lon)
+    lat = parseInt(lat)
+    lon = parseInt(lon)
+    var userid = req.params.id
 
-    console.log(lat,lon);
+    var updatedCoords = []
+    updatedCoords.push(lon, lat)
+
+    console.log(lat, lon);
+
+    var updatedGeoJson = {
+        type: "Point",
+        coordinates: updatedCoords
+    }
+
+
 
     // Update User Location in Database    
+    user.findByIdAndUpdate(userid, {
+        coordinates : updatedCoords,
+        geojson : updatedGeoJson,
+        lat : lat,
+        long : lon
+    } , (err, result) => {
+        console.log("<<< " + result + " >>>"); 
+        console.log("Updating User Location >>>" + userid);
+    })
+
 
     if (!req.session.userid) {
         res.redirect('/user/login')
-    }
-    else
-    res.redirect('/user/dashboard/'+req.params)
+    } else
+        res.redirect('/user/dashboard/' + req.params)
 
     // user.aggregate(
     //     [{
