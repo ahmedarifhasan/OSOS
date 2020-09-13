@@ -29,11 +29,11 @@ const userSchema = new mongoose.Schema({
         type: {
             type: String
         },
-        coordinates : []
+        coordinates: []
     },
-    orders : {
-        type : Array
-    }
+    orders: [{
+        type: Object
+    }]
 
 })
 

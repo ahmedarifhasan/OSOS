@@ -88,7 +88,7 @@
             Show Map
         </button>
         <hr>
-        <h4 class="text-center"> <b> Nearest ------------->  Farthest </b> </h4>
+        <h4 class="text-center"> <b> Nearest -------------------------->  Farthest  Delivery Guy</b> </h4>
         <h4 style="display:inline-block"
             onclick="tomtom('<%= userdata.coordinates[0] %>','<%= userdata.coordinates[1] %>');"
             id="<%= userdata._id %>">
@@ -152,7 +152,6 @@
                 </button>
 
             </div>
-            <br>
         </div>
 
         <h4 id="dummyOrderMessage">
@@ -351,6 +350,7 @@
         $.post(orderPostLink, order, (response, status, jhqhr) => {
             console.log(response);
         })
+        productID = []
     }
 
     // dummyOrderMessage = (element) => {

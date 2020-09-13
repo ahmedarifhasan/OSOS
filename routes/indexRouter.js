@@ -251,7 +251,9 @@ router.post('/dummyorder/:id', (req, res) => {
 
     // Updating User Orders
     user.findByIdAndUpdate(userid, {
-        orders: productsOrdered
+        $push: {
+            orders: productsOrdered
+        }
     }, (err, result) => {
         if (err) {
             // res.send({
@@ -288,15 +290,18 @@ router.post('/dummyorder/:id', (req, res) => {
                 }
                 var newOrder = {
                     orderID: userid,
-                    order: productsOrdered
+                    order: productsOrdered,
+                    deliveryLocation : coords
                 }
                 console.log(newOrder, " << New Order >>");
                 deliveryguy.findByIdAndUpdate(
                     deliveryGuyData[0]._id, {
-                        orders: newOrder
+                        $push: {
+                            orders: newOrder
+                        }
                     }, (err, ress) => {
                         if (err) {
-                            console.log("Error while updating order in Dguy");
+                            console.log("Error while updating order in Dguy ", err);
                         } else {
                             console.log("successfully updated dguy orders", ress);
                         }
