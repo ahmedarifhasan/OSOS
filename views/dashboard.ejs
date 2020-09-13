@@ -121,13 +121,13 @@
         </div>
         <hr>
 
-        <div class="alert alert-danger" id="orderMessage">
+        <div class="alert alert-danger" id="orderMessage1">
             <h4>
                 Click below to pass your order to the closest Delivery Guy
             </h4>
         </div>
 
-        <div class="row text-center">
+        <div class="row text-center" id="products">
             <div class="col">
                 <button class="btn btn-warning btn-lg" id="prod1" onclick="dummyOrder(this)">
                     <h4>
@@ -151,10 +151,10 @@
                 </button>
 
             </div>
+            <br>
         </div>
-        <br>
-        <button class=" btn btn-dark btn-block btn-lg" onclick="dummyOrder()">
-            Dummy Order
+        <button class=" btn btn-dark btn-block btn-lg" onclick="dummyOrderMessage(this)" id="dummyOrderMessage">
+            Click on Button above to order
         </button>
         <hr>
         <button id="userLocationButton" type="button" onclick="gettLocation()" class="btn btn-dark btn-block btn-lg">
@@ -315,19 +315,27 @@
 
 <!-- Dummy Order -->
 <script>
-    order = {
-
-    }
+    productID = []
+    let order = {};
     dummyOrder = (element) => {
+        document.getElementById("orderMessage1").style.display = "none"
+        if (productID.length == 4) {
+            document.getElementById("products").style.display = "none"
+        }
         console.log(element.id);
-        order.productID = element.id;
+        productID.push(element.id)
+        order.productID = productID
+        element.style.display = "none"
         var orderPostLink = '/user/dummyorder/' + '<%=userdata._id%>'
+        dummyOrderMessage(document.getElementById("dummyOrderMessage"));
 
-        $.post(orderPostLink,order,(response , status , jhqhr)=>{
+        $.post(orderPostLink, order, (response, status, jhqhr) => {
             console.log(response);
         })
+    }
 
-
+    dummyOrderMessage = (element) => {
+        element.innerHTML = order.productID + " Ordered Successfully"
     }
 </script>
 
