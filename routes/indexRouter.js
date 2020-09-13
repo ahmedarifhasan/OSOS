@@ -262,17 +262,10 @@ router.get('/dashboard/:id', (req, res) => {
     }
 
 
-    deliveryguy.createIndexes({
-        geojson: "2dsphere"
-    })
-    user.createIndexes({
-        geojson: "2dsphere"
-    })
-
     let userid = req.params.id
-
+    console.log("userid at Server : ", userid ,typeof(userid));
     user.findById(userid, (err, userdata) => {
-
+        console.log(userdata, "<< UserData >>");
         let coords = userdata.coordinates
 
         // Getting User Location, Passing User Co-ordinates to get nearest location , using 'Point' type
@@ -310,7 +303,7 @@ router.get('/dashboard/:id', (req, res) => {
                         console.log("ERROR IN GIOWITHIN ->>" + error);
                         res.status(401).send()
                     } else {
-                        console.log(deliveryGuyData, "\n<<<Data in giowithin>>>");
+                        console.log(deliveryGuyData, "\n<<<DeliveryGuyData in giowithin>>>");
                         res.render('dashboard', {
                             data: deliveryGuyData,
                             userdata: userdata
@@ -342,16 +335,23 @@ router.post('/dashboard/:id', (req, res) => {
 
 
 
+    console.log("finding user by id in POST", userid);
     // Update User Location in Database    
-    user.findByIdAndUpdate(userid, {
-        coordinates : updatedCoords,
-        geojson : updatedGeoJson,
-        lat : lat,
-        long : lon
-    } , (err, result) => {
-        console.log("<<< " + result + " >>>"); 
-        console.log("Updating User Location >>>" + userid);
-    })
+    user.findByIdAndUpdate(
+        userid, {
+            coordinates: updatedCoords,
+            geojson: updatedGeoJson,
+            lat: lat,
+            long: lon
+        }, (err, result) => {
+            if (!err) {
+                console.log("<<< " + result + " >>>");
+                console.log("Updated User Location >>>" + userid);
+            }
+
+        }
+
+    )
 
 
     if (!req.session.userid) {
@@ -385,6 +385,50 @@ router.post('/dashboard/:id', (req, res) => {
     //     }
     // )
 
+})
+
+
+router.post('/dashboardu/:id', (req, res) => {
+    console.log(req.body, "Dashboardu on the Server");
+    var lat = req.body.lat
+    var lon = req.body.long
+    lat = parseInt(lat)
+    lon = parseInt(lon)
+    var userid = req.params.id
+
+    var updatedCoords = []
+    updatedCoords.push(lon, lat)
+
+    console.log(lat, lon);
+
+    var updatedGeoJson = {
+        type: "Point",
+        coordinates: updatedCoords
+    }
+
+    console.log("finding user by id in POST", userid);
+    // Update User Location in Database    
+    user.findByIdAndUpdate(
+        userid, {
+            coordinates: updatedCoords,
+            geojson: updatedGeoJson,
+            lat: lat,
+            long: lon
+        }, (err, result) => {
+            if (!err) {
+                console.log("<<< " + result + " >>>");
+                console.log("Updated User Location >>>" + userid);
+                res.send({ status : "success"})
+            }
+
+        }
+
+    )
+})
+
+router.post('/dummyorder/:id',(req,res)=>{
+    console.log(req.body);
+    res.send({ status : "Successful Order Received"})
 })
 
 router.post('/login', (req, res) => {
