@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema({
             type: String
         },
         coordinates : []
+    },
+    orders : {
+        type : Array
     }
 
 })

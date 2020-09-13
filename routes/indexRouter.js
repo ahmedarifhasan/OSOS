@@ -1,4 +1,3 @@
-
 const express = require('express')
 const router = express.Router()
 const bodyParser = require('body-parser')
@@ -79,7 +78,7 @@ router.get('/dashboard/:id', (req, res) => {
 
 
     let userid = req.params.id
-    console.log("userid at Server : ", userid ,typeof(userid));
+    console.log("userid at Server : ", userid, typeof (userid));
     user.findById(userid, (err, userdata) => {
         console.log(userdata, "<< UserData >>");
         let coords = userdata.coordinates
@@ -122,7 +121,8 @@ router.get('/dashboard/:id', (req, res) => {
                         console.log(deliveryGuyData, "\n<<<DeliveryGuyData in giowithin>>>");
                         res.render('dashboard', {
                             data: deliveryGuyData,
-                            userdata: userdata
+                            userdata: userdata,
+                            deliveryGuy: ""
                         })
                     }
                 })
@@ -234,7 +234,9 @@ router.post('/dashboardu/:id', (req, res) => {
             if (!err) {
                 console.log("<<< " + result + " >>>");
                 console.log("Updated User Location >>>" + userid);
-                res.send({ status : "success"})
+                res.send({
+                    status: "success"
+                })
             }
 
         }
@@ -242,9 +244,66 @@ router.post('/dashboardu/:id', (req, res) => {
     )
 })
 
-router.post('/dummyorder/:id',(req,res)=>{
+router.post('/dummyorder/:id', (req, res) => {
     console.log(req.body);
-    res.send({ status : "Successful Order Received"})
+    let productsOrdered = req.body.productID
+    var userid = req.params.id
+
+    // Updating User Orders
+    user.findByIdAndUpdate(userid, {
+        orders: productsOrdered
+    }, (err, result) => {
+        if (err) {
+            // res.send({
+            //     status: "Error while passing customer order"
+            // })
+        }
+        console.log(`Ordered Successfully for user with id : ${userid} , User Data -> ` + result);
+
+        var coords = result.coordinates
+
+        const filter = {
+            'geojson': {
+                '$near': {
+                    '$maxDistance': 10000000000,
+                    '$geometry': {
+                        'type': 'Point',
+                        'coordinates': coords
+                    }
+                }
+            }
+        }
+
+        deliveryguy.find(
+            filter, (error, deliveryGuyData) => {
+                if (error) {
+                    console.log("ERROR IN GIOWITHIN IN DUMMYORDER->>" + error);
+                    // res.status(401).send()
+                } else {
+                    console.log(deliveryGuyData[0], "\n<<<DeliveryGuyData in giowithin in dummyOrder>>>");
+                    res.render('dashboard', {
+                        data: deliveryGuyData,
+                        userdata: result,
+                    })
+                }
+                var newOrder = {
+                    orderID: userid,
+                    order: productsOrdered
+                }
+                console.log(newOrder, " << New Order >>");
+                deliveryguy.findByIdAndUpdate(
+                    deliveryGuyData[0]._id, {
+                        orders: newOrder
+                    }, (err, ress) => {
+                        if (err) {
+                            console.log("Error while updating order in Dguy");
+                        } else {
+                            console.log("successfully updated dguy orders", ress);
+                        }
+                    })
+
+            })
+    })
 })
 
 router.post('/login', (req, res) => {

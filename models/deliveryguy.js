@@ -18,6 +18,10 @@ const deliveryguySchema = new mongoose.Schema({
     long: {
         type: Number
     },
+    orders : {
+        type : Object
+    }
+    ,
     orderID: {
         type: Number
     },
