@@ -25,12 +25,14 @@ const userSchema = new mongoose.Schema({
     coordinates: {
         type: Array,
     },
+    // GeoJson object for performing $near operator with coordinates of this object as center of $near
     geojson: {
         type: {
             type: String
         },
         coordinates: []
     },
+    // Orders of this user
     orders: [{
         type: Object
     }]

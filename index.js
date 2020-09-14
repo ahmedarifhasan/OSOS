@@ -21,19 +21,20 @@ db.on("open", () => {
 
 const path = require('path')
 
-// <-- User Model -->
+// <-- User DB Model -->
 const userdb = require('./models/user')
-
-// <-- Body Parser -->
+ 
+// <-- Body Parser Middleware for parsing requests-->
 const bodyParser = require('body-parser')
 
+
+// <-- Session for storing the session -->
 const session = require('express-session')
 
 
 
-// Files Downlaoded on the client side , ie acts local to them
+// These static files get Downloaded on the client side , ie acts local to their browser
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(express.static(   __dirname + '/public/'   )   )
 
 
 app.use(bodyParser.urlencoded({
@@ -41,12 +42,12 @@ app.use(bodyParser.urlencoded({
 }))
 // app.use(bodyParser.json())
 
-
+// <-- Setting View Engine to 'EJS' -->
 app.set('view engine', 'ejs')
 
 
 
-// Express session
+// Express session secret for User
 app.use(
   session({
     secret: 'secret',
@@ -55,6 +56,7 @@ app.use(
   })
 );
 
+// Express session config for delivery Guy
 app.use("delivery",
   session({
     secret: 'mysecret',
@@ -65,7 +67,11 @@ app.use("delivery",
 
 
 // <-- Routers -->
+
+// User Router
 app.use('/user', require('./routes/indexRouter.js'))
+
+// Delivery Guy Router
 app.use('/delivery', require('./routes/deliveryGuyRouter.js'))
 
 

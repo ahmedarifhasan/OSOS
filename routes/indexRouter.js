@@ -3,6 +3,7 @@ const router = express.Router()
 const bodyParser = require('body-parser')
 
 
+// Using TomTom Maps API for providing Map Interface
 const tt = require('@tomtom-international/web-sdk-services/dist/services-node.min.js');
 
 tt.services.copyrights({
@@ -10,17 +11,18 @@ tt.services.copyrights({
     key: 'h7Zirz3PBI0aDIrfq0UQlnOXm7HiB5kj'
 });
 
+
+// Importing Models
 const user = require('../models/user');
-const {
-    route
-} = require('./deliveryGuyRouter');
 const deliveryguy = require('../models/deliveryguy');
 
-
+// <-- New User registration GET request  -->
 router.get('/register', (req, res) => {
     res.render('register')
 })
 
+
+// <-- New User registration POST request -->
 router.post('/register', (req, res) => {
     const {
         username,
@@ -60,17 +62,44 @@ router.post('/register', (req, res) => {
 })
 
 
-// <-- login GET and POST -->
+// <-- User login GET request -->
 router.get('/login', (req, res) => {
     res.render('login')
 })
 
 
-// API key : 2e36871d5b43683e7a31edf11112dd02
+
+// <-- User Login POST request -->
+router.post('/login', (req, res) => {
+
+    const username = req.body.username
+    const password = req.body.password
+    // console.log(username , password)
+    console.log(req.body, "In Login");
+    user.findOne({
+        username: username,
+    }, (error, result) => {
+        if (error) {
+            console.error("User Not registered")
+            res.redirect('/user/register')
+        } else if (result.password === password) {
+            // storing the current logged in userid into the session.userid 
+            req.session.userid = result._id
+            res.redirect('/user/dashboard/' + req.session.userid)
+        } else {
+            console.error("Wrong Password")
+            res.redirect('/user/login')
+        }
+    })
+})
+
+
+
+
+// <-- User Dashboard GET request -->
 
 router.get('/dashboard/:id', (req, res) => {
 
-    console.log(req.session.userid, req.params.id);
     if (!req.session.userid) {
         console.log("Login Failed");
         res.redirect('/user/login')
@@ -80,7 +109,6 @@ router.get('/dashboard/:id', (req, res) => {
     let userid = req.params.id
     console.log("userid at Server : ", userid, typeof (userid));
     user.findById(userid, (err, userdata) => {
-        console.log(userdata, "<< UserData >>");
         let coords = userdata.coordinates
 
         // Getting User Location, Passing User Co-ordinates to get nearest location , using 'Point' type
@@ -96,7 +124,7 @@ router.get('/dashboard/:id', (req, res) => {
                 }
             }
         }
-
+        // <-- $geoWithin could also be used but $near looked simpler and less complex-->
         // {
         //     'geojson': {
         //         '$geoWithin': {
@@ -131,6 +159,8 @@ router.get('/dashboard/:id', (req, res) => {
 
 })
 
+
+// <-- User Dashboard POST request -->
 router.post('/dashboard/:id', (req, res) => {
     console.log(req.body, "Dashboard on the Server");
     var lat = req.body.lat
@@ -244,6 +274,9 @@ router.post('/dashboardu/:id', (req, res) => {
     )
 })
 
+
+
+// <-- User Dummy Order POST request, received through ajax POST request here which is then used for updating the user orders in the user database and for finding the nearest delivery guy to the user using '$near' operator -->
 router.post('/dummyorder/:id', (req, res) => {
     console.log(req.body);
     let productsOrdered = req.body.productID
@@ -251,6 +284,7 @@ router.post('/dummyorder/:id', (req, res) => {
 
     // Updating User Orders
     user.findByIdAndUpdate(userid, {
+        // Using '$push' operator to push the 'productsOrdered' onto the user's order database
         $push: {
             orders: productsOrdered
         }
@@ -262,20 +296,24 @@ router.post('/dummyorder/:id', (req, res) => {
         }
         console.log(`Ordered Successfully for user with id : ${userid} , User Data -> ` + result);
 
+        // assigning user location to a variable 
         var coords = result.coordinates
 
         const filter = {
             'geojson': {
                 '$near': {
+                    // This maxDistance can be changed to suit the needs
                     '$maxDistance': 10000000000,
                     '$geometry': {
                         'type': 'Point',
+                        // the users coordinates are passed to as the coordinates in geometry
                         'coordinates': coords
                     }
                 }
             }
         }
 
+        // Finding the NEAREST delivery guy to pass the order onto
         deliveryguy.find(
             filter, (error, deliveryGuyData) => {
                 if (error) {
@@ -291,11 +329,12 @@ router.post('/dummyorder/:id', (req, res) => {
                 var newOrder = {
                     orderID: userid,
                     order: productsOrdered,
-                    deliveryLocation : coords
+                    deliveryLocation: coords
                 }
                 console.log(newOrder, " << New Order >>");
                 deliveryguy.findByIdAndUpdate(
                     deliveryGuyData[0]._id, {
+                        // Using $push operator to pass the order to the NEAREST delivery guy
                         $push: {
                             orders: newOrder
                         }
@@ -311,30 +350,6 @@ router.post('/dummyorder/:id', (req, res) => {
     })
 })
 
-router.post('/login', (req, res) => {
-
-    const username = req.body.username
-    const password = req.body.password
-
-    // console.log(username , password)
-
-    console.log(req.body, "In Login");
-    user.findOne({
-        username: username,
-    }, (error, result) => {
-        if (error) {
-            console.error("User Not registered")
-            res.redirect('/user/register')
-        } else if (result.password === password) {
-            req.session.userid = result._id
-            console.log(req.session.userid);
-            res.redirect('/user/dashboard/' + req.session.userid)
-        } else {
-            console.error("Wrong Password")
-            res.redirect('/login')
-        }
-    })
-})
 
 // <-- Image Uploading -->
 

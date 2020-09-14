@@ -18,10 +18,17 @@ const deliveryguySchema = new mongoose.Schema({
     long: {
         type: Number
     },
+    // Orders to be delivered by this user
     orders: [],
+    // Unique Login ID for the Delivery Guy
+    deliveryID: {
+        type: String
+    },
+    // Coordinates , these can be updated live if feature added
     coordinates: {
         type: Array,
     },
+    // geojson object for adding 2dsphere index to perform '$near' query
     geojson: {
         type: {
             type: String
