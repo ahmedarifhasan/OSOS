@@ -4,9 +4,11 @@
 
 
 **ROUTES:
-1. /user/login            -->   User Login ID : arif                     User Password : 123456
+1. /user/login            -->    User Login ID : arif                     
+                                 User Password : 123456
 2. /user/register         -->	 Register a user 
-3. /delivery/login        -->	 Delivery Guy Login ID : jmCmN            Delivery Password : abc
+3. /delivery/login        -->	 Delivery Guy Login ID : jmCmN            
+                                 Delivery Password : abc
 4. /delivery/register     -->	 Register a Delivery Guy
 5. MongoDB Link	   -->  "mongodb+srv://arif:arif@cluster0.7cgsl.gcp.mongodb.net/geonear"
 
@@ -21,6 +23,8 @@
 7. Gives the option of the user to change the current location with click of a button, if clicked / updated location the info is also changed on the Database.
 8. A 'Dummy Order' Button that passes the delivery onto the nearest Delivery guy to the users current location.
 9. The users order is updated onto the Database and included into the Database of the nearest delivery guys 'to-deliver' list.
+10. The Delivery Guy can login both with a special id and username.
+11. Registration for both User and Delivery Guy.
 
 
 **Note : You can check the Database for the storage of User Info, Delivery Guy Info, Orders Info etc. Also, The Project is not complete, there are features pending and are on hold for now, There Could be bugs but this is just a demonstration of what could be done. 
