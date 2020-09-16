@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>README</title>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/jquery-1.8.3.min.js"></script>
+    <script src="/js/jquery.dashboard.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+
+    <style>
+        h3 {
+            font-weight: bolder;
+        }
+
+        article,
+        p , ul li {
+            font-size: x-large;
+        }
+
+        #arrow {
+            color: blueviolet;
+            font-weight: bolder;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h3> INTRODUCTION : </h3>
+    <article>
+        <div class="text-info" style="font-weight: bold;">
+            A Geolocation based application that passes the order of a customer/user to the nearest delivery Guy using
+            the
+            $near operator of the mongo Database.
+            Backend using Node.js, Express.js. Other Technologies such as EJS templating engine, express-session,
+            BootStrap
+            etc.
+        </div>
+
+    </article>
+
+    <h3>ROUTES : </h3>
+    <article>
+        <ul>
+            <li>
+                <a href="/user/login">/user/login</a>
+                <span id="arrow">--></span> User Login ID : <b> arif </b>
+                -User Password : <b> 123456 </b>
+            </li>
+
+            <li>
+                <a href="/user/register">/user/register</a>
+                <span id="arrow">--></span> Register a user
+            </li>
+            <li>
+                <a href="/delivery/login">/delivery/login</a>
+                /delivery/login <span id="arrow">--></span> Delivery Guy Login ID : <b> jmCmN </b>
+                -Delivery Guy Password : <b> abc </b>
+            </li>
+            <li>
+                <a href="/delivery/register">/delivery/register</a>
+                /delivery/register <span id="arrow">--></span> Register a Delivery Guy
+            </li>
+
+            <b> MongoDB Link </b> <span id="arrow">--></span> <b style="color: brown;">
+                "mongodb+srv://arif:arif@cluster0.7cgsl.gcp.mongodb.net/geonear" </b>
+        </ul>
+    </article>
+
+    <h3>
+        FEATURES :
+    </h3>
+    <p>
+        <ul>
+            <li>
+                Session based Web Application using (express-session) dependency.
+            </li>
+            <li>
+                Login feature for User.
+            </li>
+            <li>
+                Login feature for Delivery Guy.
+            </li>
+            <li>
+                Uses TomTom Maps API (Alternative to gmaps).
+            </li>
+            <li>
+                Shows Current User Location on the Map.
+            </li>
+            <li>
+                Shows Delivery Guys' (more than one) Location on the Map.
+            </li>
+            <li>
+                Gives the option of the user to change the current location with click of a button, if clicked / updated
+                location
+                the info is also changed on the Database.
+            </li>
+            <li>
+                A 'Dummy Order' Button that passes the delivery onto the nearest Delivery guy to the users current
+                location.
+            </li>
+            <li>
+                The users order is updated onto the Database and included into the Database of the nearest delivery guys
+                'to-deliver' list.
+            </li>
+
+        </ul>
+    </p>
+
+    <p>
+
+        Note : You can check the Database for the storage of User Info, Delivery Guy Info, Orders Info etc. Also, The
+        Project is not complete, there are features pending and are on hold for now, There Could be bugs but this is
+        just a
+        demonstration of what could be done.
+        **Note : Another IMPORTANT thing i wanted to mention is that I used data-type 'Number' in JS to store the
+        coordinates for simplicity.
+    </p>
+
+    <p>
+
+        Check MongoDB for Storage of new users, new delivery guys, Orders etc.
+
+        // This Application is not Yet Complete I was supposed to complete it but because the role I was applying for
+        wasn't
+        vacant, I stopped it here for now.
+    </p>
+
+</body>
+
+</html>

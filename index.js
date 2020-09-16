@@ -69,6 +69,11 @@ app.use("delivery",
 // <-- Routers -->
 
 // User Router
+
+app.get('/',(req,res)=>{
+  res.render('readme')
+})
+
 app.use('/user', require('./routes/indexRouter.js'))
 
 // Delivery Guy Router
