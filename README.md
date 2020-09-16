@@ -5,10 +5,10 @@
 
 **ROUTES:
 1. /user/login            -->    User Login ID : arif                     
-                                 User Password : 123456
+                                -User Password : 123456
 2. /user/register         -->	 Register a user 
 3. /delivery/login        -->	 Delivery Guy Login ID : jmCmN            
-                                 Delivery Password : abc
+                                -Delivery Password : abc
 4. /delivery/register     -->	 Register a Delivery Guy
 5. MongoDB Link	   -->  "mongodb+srv://arif:arif@cluster0.7cgsl.gcp.mongodb.net/geonear"
 
